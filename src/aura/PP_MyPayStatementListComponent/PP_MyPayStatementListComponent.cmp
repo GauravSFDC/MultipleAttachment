@@ -1,0 +1,27 @@
+<aura:component controller="PP_MyPaySlip_Cntrl" implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:appHostable" access="global">
+   <aura:set attribute="auraPreInitBlock">
+    <auraStorage:init debugLoggingEnabled="true"
+                         name="actions"
+                         persistent="false" secure="true"
+                         clearStorageOnInit="true"
+                         defaultExpiration="3600"
+                         maxSize="10485760" version="1.0"/>
+    </aura:set> 
+    
+	<aura:attribute name="test"             type="String"  />
+    <aura:attribute name="payStmtList" 		type="PP_MyPaySlip_Cntrl.Wrapper_PayrollResults"/>
+    <aura:attribute name="selectedYear" 	type="String" />
+    <aura:attribute name="hideDetails" 		type="Boolean" /> 
+    
+    <aura:handler name="init" action="{!c.doInit}" 				value="{!this}"/>
+    <aura:handler event="c:PP_MyPayStatementListMethodEvent" 	action="{!c.gotEvent}" />
+    <aura:handler event="c:PP_MyPayStatementSummaryEvent1" 		action="{!c.gotSummaryEvent}" />
+    <aura:registerEvent name="PP_showErrorMessage" type="c:PP_MyPayStatementErrorMessage"/>
+    
+    <div class="monthly-earning-container"  aura:id="tableIdMain">
+      <!--  <aura:iteration items="{!v.payStmtList}"  var="paySt" indexVar="index" > 
+            <h2>{!paySt.strMonthName}</h2> -->
+            <c:PP_MyPayStatementItemComponent selectedYear="{!v.selectedYear}"  wraperlst="{!v.payStmtList}" />
+      <!--  </aura:iteration> -->
+    </div>
+</aura:component>

@@ -1,0 +1,90 @@
+<aura:component controller="PP_MyPaySlip_Cntrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="SequenceNumber" 	type="String" />
+    <aura:attribute name="date" 			type="String" />
+    <aura:attribute name="ComponentName" 	type="String" />
+    <aura:attribute name="openEmail"       type="Boolean" default="true"/>
+    <aura:attribute name="changeEmail"     type="Boolean" default="false"/>
+    <aura:attribute name="successMessage"  type="Boolean" default="false"/>
+    <aura:attribute name="failureMessage"  type="Boolean" default="false"/>
+    <aura:attribute name="changedMail"      type="String"/>
+    <aura:attribute name="originalMailName"      	type="String"/>
+    <aura:attribute name="originalMailEmployee"     type="String"/>
+    <aura:handler action="{!c.doInit}" 		name="init" value="{!this}"/>
+    
+    <aura:if isTrue="{!v.openEmail}">
+        <div class="pay-email-page">
+            <section class="abi-sub-header abi-page-margins">
+                <a href=""><img class="abi-left-arrow abi-page-logo" src="/PP/resource/PP_MyPayStatementLeftRedIcon" onclick="{!c.hideEmailCmp}" alt="Back Arrow"/></a>
+                <a href=""><img class="abi-wallet abi-page-logo" src="/PP/resource/PP_MailHeaderIcon" alt="Wallet Icon"/></a>
+                <h1 class="pay-summary-header">CONFIRM E-MAIL ID</h1>
+            </section>		
+            <div class="main-container">
+                <img class="mail-paper-plane" src="/PP/resource/PP_MailPlanIcon" alt="Send mail"/>
+                <div class="mail-send-note">Send my Pay Statement</div>
+                <div class="mail-send-to">for the period of <span class="mail-statement-for">{!v.date}</span> to</div>
+            </div>		
+            <div class="mail-id-container">
+                <div class="mail-username">	<ui:outputText value="{!v.originalMailName}" 		aura:id="employeeName"/></div>
+                <div class="mail-domain">	<ui:outputText value="{!v.originalMailEmployee}" aura:id="employeeCompany"/></div>
+            </div>
+            <div class="main-container">
+                <input class="send-button" type="button" value="SEND" onclick="{!c.sendEmail}"/>
+                <a class="change-id" href="" alt="Change mail id" onclick="{!c.changeEmailAddress}">Change e-Mail ID</a>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.changeEmail}">
+        <div class="pay-email-change-page">
+            <section class="abi-sub-header abi-page-margins">
+                <a href=""><img class="abi-left-arrow abi-page-logo" src="/PP/resource/PP_MyPayStatementLeftRedIcon" onclick="{!c.hideChangeEmail}" alt="Back Arrow"/></a>
+                <a href=""><img class="abi-wallet abi-page-logo" src="/PP/resource/PP_MailHeaderIcon" alt="Wallet Icon"/></a>
+                <h1 class="pay-summary-header">CONFIRM E-MAIL ID</h1>
+            </section>
+            <div class="main-container">
+                <img class="mail-paper-plane" src="/PP/resource/PP_MailPlanIcon" alt="Send mail"/>
+                <div class="mail-send-note">Send my Pay Statement</div>
+                <div class="mail-send-to">for the period of <span class="mail-statement-for">{!v.date}</span> to</div>
+            </div>		
+            <div class="mail-id-new">
+                <ui:inputText class="mail-input"   value="{!v.changedMail}" aura:id="changedEmailAddress"/> 
+            </div>
+                <div id="errorMsg" style="display:none;text-align: center;color: #da1e3b;font-size: 1.5em;margin-top: 1em;font-weight: 700;"> 
+                    <h1  class="pay-summary-header"><img style="margin-right: .2em;max-width: 1.3em;height: auto;margin-top: -.6em;" class="error-exclamation" src="/PP/resource/PP_MyPayStatementExclamation1" alt="Exclamation"/> Invalid e-mail address. Please try again.</h1>
+            </div>
+            <div class="main-container">
+                <div class="done-button-container">
+                    <input class="done-button" type="button" value="Confirm" onclick="{!c.conformMail}"/>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.successMessage}">
+        <div class="pay-email-success-page">
+            <div class="main-container">
+                <img class="email-success-icon" src="/PP/resource/PP_MyPayStatementEmailSuccess" alt="Email sent successfully"/>
+                <div class="email-success-content">
+                    Your pay statement for the period of <span class="email-success-date">{!v.date}</span> has been sent
+                </div>
+            </div>
+            <div class="main-container-footer">
+                <a class="email-success-footer-link" href="" alt="Pay Earnings" onclick="{!c.openMasterComponent}">Pay Earnings &gt;</a>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.failureMessage}">
+        <div class="pay-email-failure-page">
+            <div class="main-container">
+                <img class="email-failure-icon" src="/PP/resource/PP_MyPayStatementFailureEmailIcon" alt="Email not sent"/>
+                <div class="email-failure-content">
+                    Your pay statement for the period <span class="email-failure-date">{!v.date}</span> has not been sent
+                </div>
+                <input class="try-again-button" type="button" value="TRY AGAIN" onclick="{!c.tryAgain}"/>
+            </div>
+            <div class="main-container-footer">
+                <a class="email-failure-footer-link" href="" alt="Pay Earnings" onclick="{!c.openMasterComponent}">Pay Earnings &gt;</a>
+            </div>
+        </div>
+    </aura:if>
+    <aura:registerEvent name="PP_MyPayStatementSendEmail1Evt" type="c:PP_MyPayStatementSendEmail1Evt"/>
+    <aura:registerEvent name="PP_OpenMyPayStatementMasterComponent" type="c:PP_OpenMyPayStatementMasterComponent"/>
+</aura:component>

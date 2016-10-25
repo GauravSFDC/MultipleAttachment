@@ -1,0 +1,188 @@
+<aura:component controller="PP_MyPaySlip_Cntrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+     <ltng:require scripts="{!$Resource.PP_JqueryLib}"  />
+    <aura:attribute name="selectedId" 		type="String" />
+    <aura:attribute name="NetPay" 			type="String" /> 
+    <aura:attribute name="CURwages" 		type="String" />
+    <aura:attribute name="YTDwages" 		type="String" />
+    <aura:attribute name="CURdeduction" 	type="String" />
+    <aura:attribute name="YTDdeduction" 	type="String" />
+    <aura:attribute name="CURtax" 			type="String" />
+    <aura:attribute name="YTDtax" 			type="String" />
+    <aura:attribute name="directDeposit" 	type="String" />
+    <aura:attribute name="YTDDirectDep" 	type="String" />
+    <aura:attribute name="CURDirectDep" 	type="String" />
+    <aura:attribute name="date" 			type="String" />
+    <aura:attribute name="cheque" 			type="String" />
+    <aura:attribute name="SequenceNumber" 	type="String" />
+	<aura:attribute name="selectedType" 	type="String" />
+    
+    <aura:attribute name="date2" 			type="String" />
+    <aura:attribute name="SequenceNumber2" 	type="String" />
+    <aura:attribute name="FAQDropDownHeight" 	type="String" />
+    
+    <aura:attribute name="isFAQ" 			type="Boolean" default="false"/>
+    <aura:attribute name="hideSummary" 		type="Boolean"/>
+    <aura:attribute name="isEmail" 			type="Boolean" default="false"/>
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <aura:handler event="c:PP_MyPayStatementSendEmail1Evt" 		action="{!c.hideEmailDetails}" />
+    <aura:handler event="c:PP_MyPayStatementFAQDropdownHeightEvent" 		action="{!c.closeFAQDetails}" />
+    <aura:registerEvent name="PP_MyPayStatementSummaryEvt" type="c:PP_MyPayStatementSummaryEvent1"/>
+    
+    <style>
+        .pay-earnings-page>.main-container {
+        padding: 0;
+        }
+        
+        .pay-summary-page .main-container {
+        padding: 0 1.5em; 
+        }
+    </style>
+    <aura:if isTrue="{!v.isEmail}">
+        <span>
+            <c:PP_MyPayStatementSendEmail1 SequenceNumber="{!v.SequenceNumber2}" date="{!v.date2}"/>
+        </span>
+    </aura:if>
+    <aura:If isTrue="{!v.isFAQ}">
+        <div class="scroller">
+            <c:PP_MyPayStatementFAQComponent selectedType="{!v.selectedType}" faqdropLength="{!v.FAQDropDownHeight}"/>
+        </div>
+    </aura:If>
+    <aura:if isTrue="{!v.hideSummary}">
+        <div class="pay-summary-page">
+			<section class="abi-sub-header abi-page-margins"  >
+				<a href="" onclick="{!c.hideSummary}"><img class="abi-left-arrow abi-page-logo" src="/PP/resource/PP_MyPayStatementLeftRedIcon" alt="Back Arrow"/></a>
+				<a href="" onclick="{!c.hideContextualMenu}"><img class="abi-wallet abi-page-logo" src="/PP/resource/PP_MyPayStatementWalletIcon" alt="Wallet Icon"/></a>
+				<h1 class="pay-summary-header">SUMMARY FOR <span id="">{!v.date}</span></h1>
+			</section>
+			<div class="current-pay-box">
+				<div class="current-pay-label">Your Current Pay</div>
+				<div class="current-pay-amount">${!v.NetPay}</div>
+                <div class="contextual-menu-control" onclick="{!c.showContextualMenu}">
+                    <img class="contextual-menu-control-icon" src="/PP/resource/PP_MyPayStatementPlusIcon1" alt="Arrow"/> 
+                </div>
+				<div id="contextual-menu-container" >
+					<div class="contextual-menu">
+                        <div class="contextual-menu-link" onclick="{!c.hideContextualMenu}">
+                            <img class="contextual-menu-logo" src="/PP/resource/PP_MyPayStatementCrossIcon2" alt="Arrow"/>
+                        </div>
+                        <div class="contextual-menu-link">
+                            <img class="contextual-menu-logo" data-sequncenumber="{!v.SequenceNumber}" data-date="{!v.date}" onclick="{!c.sendMail}" src="/PP/resource/PP_ContextualMailRed" alt="Mail"/>
+                        </div>
+                        <div class="contextual-menu-link">
+                            <img class="contextual-menu-logo" data-name="Net Pay" onclick="{!c.openFAQ}"  src="/PP/resource/PP_ContextualInfoRed" alt="Information"/>
+                        </div>
+					</div>
+				</div>
+			</div>			
+			<div class="main-container">
+				<div class="main-content-headings">
+					<h2>TOTAL WAGES</h2>
+					<a class="main-content-heading-info" data-name="Total Wages" onclick="{!c.openFAQ}" href=""><img class="summary-info-icon"  src="/PP/resource/PP_InfoIconGrey" alt="Information"/></a>
+                </div>
+				<div class="summary-amount-display-container">
+					<div class="summary-amount-display">
+						<span class="summary-amount-icon green-icon">+</span>
+					</div>
+					<div class="summary-amount-display summary-amount-display-highligted">
+                        
+						${!v.CURwages}
+					</div>
+				</div>
+				<div class="summary-amount-display-container ytd-light-font">
+					<div class="summary-amount-display">
+						YTD
+					</div>
+					<div class="summary-amount-display">
+						${!v.YTDwages}
+					</div>
+				</div>
+				<div class="main-content-headings">
+					<h2>TOTAL DEDUCTION</h2>
+					<a class="main-content-heading-info" data-name="Total Deductions" onclick="{!c.openFAQ}" href=""><img class="summary-info-icon"  src="/PP/resource/PP_InfoIconGrey" alt="Information"/></a>
+				</div>
+				<div class="summary-amount-display-container">
+					<div class="summary-amount-display">
+						<span class="summary-amount-icon red-icon">-</span>
+					</div>
+					<div class="summary-amount-display summary-amount-display-highligted">
+                        
+						${!v.CURdeduction}
+					</div>
+				</div>
+				<div class="summary-amount-display-container ytd-light-font">
+					<div class="summary-amount-display">
+						YTD
+					</div>
+					<div class="summary-amount-display">
+						${!v.YTDdeduction}
+					</div>
+				</div>
+				<div class="main-content-headings">
+					<h2>TOTAL TAXES</h2>
+					<a class="main-content-heading-info" data-name="Total Taxes" onclick="{!c.openFAQ}" href=""><img class="summary-info-icon" src="/PP/resource/PP_InfoIconGrey" alt="Information"/></a>
+				</div>
+				<div class="summary-amount-display-container">
+					<div class="summary-amount-display">
+						 <span class="summary-amount-icon red-icon">-</span>
+					</div>
+					<div class="summary-amount-display summary-amount-display-highligted">
+                       
+						${!v.CURtax}
+					</div>
+				</div>
+				<div class="summary-amount-display-container ytd-light-font">
+					<div class="summary-amount-display">
+						YTD
+					</div>
+					<div class="summary-amount-display">
+						${!v.YTDtax}
+					</div>
+				</div>
+				<div class="summary-pay-distribution">
+					<div class="main-content-headings">
+						<h2>DISTRIBUTION OF PAY</h2>
+						<a class="main-content-heading-info" data-name="Distribution of Pay" onclick="{!c.openFAQ}"  href=""><img class="summary-info-icon" src="/PP/resource/PP_InfoIconGrey" alt="Information"/></a>
+					</div>
+					<div class="distribution-display">
+						<div class="distribution-content">
+							Direct Deposit 1
+						</div>
+						<div class="distribution-content">
+							$<ui:outputNumber value="{!v.directDeposit}" format="0.00"/>
+						</div>
+					</div>
+                    <aura:renderIf isTrue="{!v.CURDirectDep != '0'}">
+                    <div class="distribution-display">
+						<div class="distribution-content">
+							Direct Deposit 2
+						</div>
+						<div class="distribution-content">
+							$<ui:outputNumber value="{!v.CURDirectDep}" format="0.00"/>
+						</div>
+					</div>
+                    </aura:renderIf>
+                    <aura:renderIf isTrue="{!v.YTDDirectDep != '0'}">
+                    <div class="distribution-display">
+						<div class="distribution-content">
+							Direct Deposit 3
+						</div>
+						<div class="distribution-content">
+							$<ui:outputNumber value="{!v.YTDDirectDep}" format="0.00"/>
+						</div>
+					</div>
+                    </aura:renderIf>
+                    
+					<div class="distribution-display">
+						<div class="distribution-content">
+							Check
+						</div>
+						<div class="distribution-content">
+							$<ui:outputNumber value="{!v.cheque}" format="0.00"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </aura:if>
+</aura:component>

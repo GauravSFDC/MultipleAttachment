@@ -1,0 +1,58 @@
+<aura:component controller="PP_MyPaySlip_Cntrl" implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:appHostable" access="global">
+    <ltng:require scripts="{!$Resource.PP_JqueryLib}"  />
+    
+    <aura:attribute name="selectedYear" 	type="String"/>
+    <aura:attribute name="wraperlst" 		type="PP_MyPaySlip_Cntrl.Wrapper_PayrollResults"/>
+    <aura:attribute name="fieldName" 		type="String" />
+    <aura:attribute name="NetPay" 			type="String" />
+    <aura:attribute name="CURwages" 		type="String" />
+    <aura:attribute name="YTDwages" 		type="String" />
+    <aura:attribute name="CURdeduction" 	type="String" />
+    <aura:attribute name="YTDdeduction" 	type="String" />
+    <aura:attribute name="CURtax" 			type="String" />
+    <aura:attribute name="YTDtax" 			type="String" />
+    <aura:attribute name="directDeposit" 	type="String" />
+    <aura:attribute name="date" 			type="String" />
+    <aura:attribute name="YTDDirectDep" 	type="String" />
+    <aura:attribute name="CURDirectDep" 	type="String" />
+    <aura:attribute name="isOpenSummaryPage" 	type="Boolean" default="false"/>
+    <aura:attribute name="isOpenDetails" 	type="Boolean" default="true"/>
+    <aura:attribute name="selectedId" 		type="String" />
+    <aura:attribute name="cheque" 			type="String" />
+    <aura:attribute name="SequenceNumber" 	type="String" />
+    <aura:attribute name="isCheck" 			type="Boolean" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+		<aura:renderIf isTrue="{!v.isOpenSummaryPage}" >
+        <div class="scroller"> 
+            <c:PP_MyPayStatementSummaryComponent selectedId="{!v.selectedId}" NetPay="{!v.NetPay}" CURwages="{!v.CURwages}" YTDwages="{!v.YTDwages}"
+                                                     CURdeduction="{!v.CURdeduction}" YTDdeduction="{!v.YTDdeduction}" CURtax="{!v.CURtax}" YTDtax="{!v.YTDtax}" directDeposit="{!v.directDeposit}"
+                                                     YTDDirectDep="{!v.YTDDirectDep}" CURDirectDep="{!v.CURDirectDep}" date="{!v.date}" cheque="{!v.cheque}" SequenceNumber="{!v.SequenceNumber}"/> 
+        </div>
+    </aura:renderIf>
+        <aura:if isTrue="{!v.isOpenDetails}">
+            <aura:iteration items="{!v.wraperlst}" var="payItem">
+                <aura:renderIf isTrue="{!payItem.strMonthName != null}">
+                <h2>{!payItem.strMonthName}</h2>
+                    </aura:renderIf>
+                <a class="earning-display-link" data-name="{!payItem.strMonthName}" data-netpay="{!payItem.Netpay}" 
+                   data-curwages="{!payItem.PaidEarnings}" data-ytdwages="{!payItem.YTDPaidEarnings}" data-curdeduction="{!payItem.Deductions}"
+                   data-ytddeduction="{!payItem.YTDDeductions}" data-curtax="{!payItem.Tax}" data-ytdtax="{!payItem.YTDTax}" 
+                   data-directdeposit="{!payItem.DirectDep}" data-cheque="{!payItem.Check}" data-ytddirectdep="{!payItem.YTDDirectDep}" 
+                   data-curdirectdep="{!payItem.CURDirectDep}" data-date="{!payItem.PayDate}" data-check="{!payItem.Check}" 
+                   data-sequencenumber="{!payItem.SequenceNumber}" onclick="{!c.openPdf}">
+                    <div class="earning-display">
+                        <div class="abi-one-half pay-date-container">
+                            <div class="abi-label">Pay Date</div>
+                            <div class="pay-date-display">{!payItem.PayDate}</div>
+                        </div>
+                        <div class="abi-one-half pay-amount-container">
+                            <div class="abi-label">Net Pay</div>
+                            <div class="net-pay-display">${!payItem.Netpay}</div>
+                        </div>
+                    </div>
+                </a>
+            </aura:iteration>
+        </aura:if>
+    <aura:registerEvent name="PP_MyPayStatementMasterMethodCallEvent" type="c:PP_MyPayStatementMasterMethodEvent"/>
+    <aura:handler event="c:PP_MyPayStatementSummaryEvent1" 	action="{!c.gotSummaryEvent}" />
+</aura:component>

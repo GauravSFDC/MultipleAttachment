@@ -1,0 +1,116 @@
+<aura:component controller="PP_MyPaySlip_Cntrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+    <ltng:require styles="{!$Resource.PP_MyPayStatementsFAQDropdown3}" />
+    <ltng:require scripts="{!$Resource.PP_JqueryLib}" afterScriptsLoaded="{!c.openDropDown}" />
+    
+    <aura:attribute name="lstFAQSubCategories" 	type="PP_FAQ_SubCategory__c[]"/>
+    <aura:attribute name="lstFAQQuestions" 		type="PP_FAQ_QA__c[]"/>
+    <aura:attribute name="FAQDescriptions" 		type="PP_FAQ_SubCategory__c"/>
+    <aura:attribute name="selectedType" 		type="String"/>
+    <aura:attribute name="FAQQuestion" 			type="String"/>
+    <aura:attribute name="FAQAnswer" 			type="String"/>
+    <aura:attribute name="FAQType" 				type="String"/>
+    <aura:attribute name="faqSelType" 			type="String"/>
+    <aura:attribute name="faqdropLength" 		type="String"/>
+    <aura:attribute name="changeFAQType" 		type="Boolean" default="true"/>
+    <aura:attribute name="showFAQTypes" 		type="Boolean" default="true"/>
+    <aura:attribute name="showFAQText" 			type="Boolean" default="false"/>
+    <aura:attribute name="showFAQDropdown" 		type="Boolean" default="true"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<!--<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/> -->
+
+    <style>
+        .uiInput--select select:not([multiple]), select.uiInput--select:not([multiple]) {
+        background-image: none;
+        }
+    </style>
+    <aura:if isTrue="{!v.showFAQTypes}">
+        <div class="pay-faq-page">
+            <section class="abi-sub-header abi-page-margins">
+                <a href=""><img class="abi-left-arrow abi-page-logo" src="/PP/resource/PP_MyPayStatementImages/images/left-arrow-red.png" onclick="{!c.closeFAQ}" alt="Back Arrow"/></a>
+                <a href=""><img class="abi-wallet abi-page-logo" src="/PP/resource/PP_MyPayStatementImages/images/faq-red.png"  alt="Wallet Icon"/></a>
+                <h1 class="pay-faq-header">HELP CENTER</h1>
+            </section>
+            <aura:if isTrue="{!v.changeFAQType}">
+             <!--   <div id="shyCustomDropdown">
+                        <div id="dropdown-head" aura:id="dropdownHead">Net Pay</div>
+                        <div id="dropdown-container">
+                            <ul id="dropdown-list">
+                                <aura:iteration items="{!v.lstFAQSubCategories}" var="FAQSubCategories" > 
+                                    <li class="dropdown-item " data-name='{!FAQSubCategories.PP_Subcategory_Type__c}'  onclick="{!c.selectFAQCategoryDrop}">{!FAQSubCategories.PP_Subcategory_Type__c}</li>
+                                </aura:iteration>
+                            </ul>
+                        </div>
+                    </div> 
+                <div id="shyCustomDropdownFAQ">
+                    <div id="dropdown-head-faq"><ui:outputText value="{!v.faqSelType}" aura:id="FAQType"/></div>
+                    <ul id="dropdown-list-faq">
+                        <aura:iteration items="{!v.lstFAQSubCategories}" var="FAQSubCategories" > 
+                            <li class="dropdown-item-faq" data-name='{!FAQSubCategories.PP_Subcategory_Type__c}'  onclick="{!c.selectFAQCategoryDrop}">{!FAQSubCategories.PP_Subcategory_Type__c}</li>
+                        </aura:iteration>
+                    </ul>
+                </div>-->
+                 <nav class="faq-dropdown" >
+                    <ui:inputSelect class="abi-custom-dropdown" aura:id="InputSelectSingle" change="{!c.selectFAQCategory}">
+                        <aura:iteration items="{!v.lstFAQSubCategories}" var="FAQSubCategories" >   
+                            <ui:inputSelectOption class="custom-dropdown-item" text="{!FAQSubCategories.PP_Subcategory_Type__c}"/>
+                        </aura:iteration>
+                    </ui:inputSelect>
+                </nav> 
+                <div class="main-container">
+                    <div class="faq-description">
+                        {!v.FAQDescriptions.Description__c}
+                    </div>
+                    <div class="faq-container">
+                        <aura:if isTrue="{!v.showFAQText}">
+                            <h2>FAQS</h2>
+                        </aura:if>
+                        <aura:iteration items="{!v.lstFAQQuestions}" var="FAQQuestions" indexVar="i">
+                            <div class="faq-questions" data-type="{!FAQQuestions.PP_FAQ_SubCategory__r.PP_Subcategory_Type__c}" data-question="{!FAQQuestions.PP_Question__c}" data-answer="{!FAQQuestions.PP_Answer__c}" onclick="{!c.openQuestion}">
+                                {!FAQQuestions.PP_Question__c}
+                            </div>
+                        </aura:iteration>
+                    </div>
+                </div>
+            </aura:if>
+        </div>
+        <aura:set attribute="else">
+            <div class="pay-faq-sub-page scroller">
+                <section class="abi-sub-header abi-page-margins">
+                    <a href=""><img class="abi-left-arrow abi-page-logo" data-questype="{!v.FAQType}" src="/PP/resource/PP_MyPayStatementImages/images/left-arrow-red.png" onclick="{!c.closeQuestion}" alt="Back Arrow"/></a>
+                    <a href=""><img class="abi-wallet abi-page-logo" src="/PP/resource/PP_MyPayStatementImages/images/faq-red.png" alt="Wallet Icon"/></a>
+                    <h1 class="pay-faq-header">HELP CENTER</h1>
+                </section>
+                <div class="faq-question-head">
+                    {!v.FAQType}
+                </div>
+                <div class="main-container">
+                    <div class="faq-question">{!v.FAQQuestion}</div>
+                    <div class="faq-answer">
+                        {!v.FAQAnswer}
+                    </div>
+                </div>
+            </div>
+        </aura:set> 
+    </aura:if>
+    <!-- <aura:if isTrue="{!v.hideFAQDeatils}">
+        <div class="pay-faq-sub-page"> 
+    <section class="abi-sub-header abi-page-margins">
+     <a href=""><img class="abi-left-arrow abi-page-logo" src="images/left-arrow-red.png" alt="Back Arrow"/></a>
+     <a href=""><img class="abi-wallet abi-page-logo" src="images/faq-red.png" alt="Wallet Icon"/></a>
+     <h1 class="pay-faq-header">HELP CENTER</h1>
+    </section>
+    <div class="faq-question-head">
+     {!v.FAQType}
+    </div>
+    <div class="main-container">
+     <div class="faq-question">{!v.FAQQuestion}</div>
+     <div class="faq-description">
+      {!v.FAQAnswer}
+     </div>
+    </div>
+   </div>
+    </aura:if> -->
+    <aura:registerEvent name="PP_CloseFAQ" type="c:PP_MyPayStatementFAQEvent"/>
+    <aura:registerEvent name="PP_CloseFAQDropdownHeight" type="c:PP_MyPayStatementFAQDropdownHeightEvent"/>
+</aura:component>

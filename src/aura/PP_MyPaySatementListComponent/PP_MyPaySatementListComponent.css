@@ -1,0 +1,9 @@
+.THIS .ctsItemMonth{
+    font-size: 30px; /*Actually 30pt. */
+    color: #2f130b;
+    font-weight: bold;
+    padding-left: 10px;
+}
+.THIS .toggle {
+   display: none;
+ }
