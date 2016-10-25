@@ -1,41 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>PP_MyPaySatementListComponent</members>
-        <members>PP_MyPayStatementErrorMessage</members>
-        <members>PP_MyPayStatementFAQComponent</members>
-        <members>PP_MyPayStatementFAQDropdownHeightEvent</members>
-        <members>PP_MyPayStatementFAQEvent</members>
-        <members>PP_MyPayStatementItemComponent</members>
-        <members>PP_MyPayStatementListComponent</members>
-        <members>PP_MyPayStatementListMethodEvent</members>
-        <members>PP_MyPayStatementMasterComponent</members>
-        <members>PP_MyPayStatementMasterMethodEvent</members>
-        <members>PP_MyPayStatementSendEmail1</members>
-        <members>PP_MyPayStatementSendEmail1Evt</members>
-        <members>PP_MyPayStatementSummaryComponent</members>
-        <members>PP_MyPayStatementSummaryEvent1</members>
-        <members>PP_OpenMyPayStatementMasterComponent</members>
+        <members>MultipleAttachmentEvent</members>
+        <members>MultipleAttachmentLightningComponents</members>
+        <members>addMultipleRows</members>
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
-        <members>PP_MyPaySlip_API_Controller_MockResponse</members>
-        <members>PP_MyPaySlip_Cntrl</members>
-        <members>PP_MyPayStatementCntrl</members>
-        <members>PP_PaySlip_API_Controller</members>
-        <members>PP_PaySlip_API_ControllerTest</members>
-        <members>PP_PayslipJsontoApex</members>
-        <members>PP_PayslipMockHttpResponseGenerator</members>
-        <members>PP_PayslipSingleJSONtoApex</members>
-        <members>PP_PdfJsonMsg</members>
-        <members>PP_PayStatement_Controller</members>
+        <members>FileController</members>
         <name>ApexClass</name>
-    </types>
-    <types>
-        <members>PP_FAQ_Category__c</members>
-        <members>PP_FAQ_QA__c</members>
-        <members>PP_FAQ_SubCategory__c</members>
-        <name>CustomObject</name>
     </types>
     <version>37.0</version>
 </Package>
