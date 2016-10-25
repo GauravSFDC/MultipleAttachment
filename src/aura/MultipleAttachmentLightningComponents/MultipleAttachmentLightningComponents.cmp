@@ -1,0 +1,20 @@
+<aura:component controller="FileController">
+    <aura:attribute name="parentId" 		type="Id" default="0019000001GYHXP"/>
+    <aura:attribute name="isAddMultiple" 	type="Boolean" default="false"/>
+    <aura:attribute name="countRows" 		type="Integer" default="0"/>
+    
+   	<aura:handler event="aura:waiting" 			action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" 		action="{!c.hideSpinner}"/>  
+    
+    <div>
+        <input type="file" class="file" aura:id="file" />
+        <ui:button label="Add" press="{!c.addMultiple}"/>
+        <ui:button label="Remove" press="{!c.deleteMultiple}"/>
+    </div>
+    <aura:if isTrue="{!v.isAddMultiple}">
+        <span></span>
+        <c:addMultipleRows countRows="{!v.countRows}"/>
+    </aura:if>
+    <ui:button label="Save" press="{!c.save}"/>
+    <aura:registerEvent name="MultipleAttachmentEvent" type="c:MultipleAttachmentEvent"/>
+</aura:component>
